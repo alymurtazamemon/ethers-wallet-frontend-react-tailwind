@@ -62,7 +62,7 @@ function ConnectButton() {
     }, []);
 
     return (
-        <div>
+        <div className="flex justify-end mr-24 -mt-20">
             <button
                 className="text-sky-400 border-2 border-sky-400 px-4 py-2 rounded-full hover:bg-sky-800"
                 onClick={onConnectTap}
