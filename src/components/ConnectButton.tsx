@@ -16,18 +16,19 @@ function ConnectButton() {
                 console.log(error);
             }
 
-            const accounts = await ethereum.request({
-                method: "eth_accounts",
-            });
-
-            updateButton(accounts[0]);
+            updateButton();
         } else {
             alert(`We could not find the MetaMask extension in your browser.`);
         }
     }
 
-    async function updateButton(account: string) {
+    async function updateButton() {
         if (ethereum.isConnected()) {
+            const accounts = await ethereum.request({
+                method: "eth_accounts",
+            });
+
+            const account = accounts[0];
             setAccountAddress(
                 `Connected to ${account.slice(0, 6)}...${account.slice(
                     account.length - 4
@@ -38,12 +39,20 @@ function ConnectButton() {
     }
 
     useEffect(() => {
+        const initialLoading = async () => {
+            if (ethereum.isConnected()) {
+                updateButton();
+            }
+        };
+
+        initialLoading();
+
         ethereum.on("accountsChanged", (accounts: Array<string>) => {
             console.log(`Account changed to ${accounts[0]}`);
             if (accounts[0] == null) {
                 setIsConnected(false);
             } else {
-                updateButton(accounts[0]);
+                updateButton();
             }
         });
 
