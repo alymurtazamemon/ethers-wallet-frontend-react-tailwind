@@ -22,9 +22,7 @@ function ConnectButton() {
 
             updateButton(accounts[0]);
         } else {
-            console.log(
-                `We could not find the MetaMask extension in your browser.`
-            );
+            alert(`We could not find the MetaMask extension in your browser.`);
         }
     }
 
