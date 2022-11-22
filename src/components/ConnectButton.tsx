@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import GenericButton from "./GenericButton";
 
-function ConnectButton() {
+function ConnectButton(): JSX.Element {
     const [accountAddress, setAccountAddress] = useState("");
     const [isConnected, setIsConnected] = useState(false);
 
@@ -63,13 +64,11 @@ function ConnectButton() {
 
     return (
         <div className="flex justify-end mr-24 -mt-20">
-            <button
-                className="text-sky-400 border-2 border-sky-400 px-4 py-2 rounded-full hover:bg-sky-800"
+            <GenericButton
                 onClick={onConnectTap}
-                disabled={isConnected}
-            >
-                {isConnected ? accountAddress : "Connect Wallet"}
-            </button>
+                isDisabled={isConnected}
+                text={isConnected ? accountAddress : "Connect Wallet"}
+            />
         </div>
     );
 }
