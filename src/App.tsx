@@ -1,8 +1,58 @@
 import "./App.css";
 import ConnectButton from "./components/ConnectButton";
 import GenericButton from "./components/GenericButton";
+import { contractAddresses, abi } from "./constants";
+import { ethers, ContractTransaction } from "ethers";
+
+const { ethereum } = window as any;
+
+interface contractAddressesInterface {
+    [key: string]: string[];
+}
 
 function App(): JSX.Element {
+    const addresses: contractAddressesInterface = contractAddresses;
+    const chainId: string = parseInt(ethereum.chainId).toString();
+    const contractAddress = chainId in addresses ? addresses[chainId][0] : null;
+
+    async function onDepositTap() {
+        if (typeof ethereum !== "undefined") {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            const contract = new ethers.Contract(contractAddress!, abi, signer);
+            try {
+                const tx: ContractTransaction = await contract.deposit({
+                    value: ethers.utils.parseEther("1"),
+                });
+                await listenForTransactionMine(tx, provider);
+            } catch (error) {}
+        } else {
+            alert(`We could not find the MetaMask extension in your browser.`);
+        }
+    }
+
+    function listenForTransactionMine(
+        transactionResponse: ContractTransaction,
+        provider: any
+    ) {
+        console.log(`Mining ${transactionResponse.hash}`);
+        return new Promise((resolve, reject) => {
+            try {
+                provider.once(
+                    transactionResponse.hash,
+                    (transactionReceipt: any) => {
+                        console.log(
+                            `Completed with ${transactionReceipt.confirmations} confirmations. `
+                        );
+                        resolve("success");
+                    }
+                );
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
     return (
         <div className="">
             <div className="pt-4">
@@ -24,7 +74,7 @@ function App(): JSX.Element {
             <div className="flex justify-center mt-16">
                 <GenericButton
                     text="Deposit"
-                    onClick={() => console.log("deposit")}
+                    onClick={onDepositTap}
                     className="mx-2 px-12"
                 />
                 <GenericButton
