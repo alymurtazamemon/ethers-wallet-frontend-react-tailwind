@@ -19,13 +19,18 @@ function App(): JSX.Element {
         if (typeof ethereum !== "undefined") {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
+
             const contract = new ethers.Contract(contractAddress!, abi, signer);
             try {
                 const tx: ContractTransaction = await contract.deposit({
                     value: ethers.utils.parseEther("1"),
                 });
                 await listenForTransactionMine(tx, provider);
-            } catch (error) {}
+            } catch (error) {
+                alert(
+                    `Facing issue while depositing please check you are on the correct chain.`
+                );
+            }
         } else {
             alert(`We could not find the MetaMask extension in your browser.`);
         }
