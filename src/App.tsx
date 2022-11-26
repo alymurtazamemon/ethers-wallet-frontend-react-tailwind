@@ -4,6 +4,7 @@ import GenericButton from "./components/GenericButton";
 import { contractAddresses, abi } from "./constants";
 import { ethers, ContractTransaction } from "ethers";
 import GenericInputField from "./components/GenericInputField";
+import { ChangeEvent, useState } from "react";
 
 const { ethereum } = window as any;
 
@@ -12,6 +13,13 @@ interface contractAddressesInterface {
 }
 
 function App(): JSX.Element {
+    // * state
+    const [formData, setFormData] = useState({
+        value: "",
+        address: "",
+    });
+
+    // * variables
     const addresses: contractAddressesInterface = contractAddresses;
     const chainId: string = parseInt(ethereum.chainId).toString();
     const contractAddress = chainId in addresses ? addresses[chainId][0] : null;
@@ -59,6 +67,17 @@ function App(): JSX.Element {
         });
     }
 
+    function handleOnChange(event: ChangeEvent<HTMLInputElement>) {
+        const { name, value } = event.target;
+
+        setFormData((prevData) => {
+            return {
+                ...prevData,
+                [name]: value,
+            };
+        });
+    }
+
     return (
         <div className="">
             <div className="pt-4">
@@ -70,33 +89,50 @@ function App(): JSX.Element {
                 </p>
             </div>
             <ConnectButton />
-            <div className="mt-24">
-                <GenericInputField
-                    className="block mx-auto mb-4"
-                    placeholder="value (ETH)"
-                />
-                <GenericInputField
-                    className="block mx-auto"
-                    placeholder="address"
-                />
-            </div>
-            <div className="flex justify-center mt-16">
-                <GenericButton
-                    text="Deposit"
-                    onClick={onDepositTap}
-                    className="mx-2 px-12"
-                />
-                <GenericButton
-                    text="Withdraw"
-                    onClick={() => console.log("withdraw")}
-                    className="mx-2 px-12"
-                />
-                <GenericButton
-                    text="Tranfer"
-                    onClick={() => console.log("transfer")}
-                    className="mx-2 px-12"
-                />
-            </div>
+            <form
+            // onSubmit={(event) => {
+            //     event.preventDefault();
+            //     console.log("submit");
+            // }}
+            >
+                <div className="mt-24">
+                    <GenericInputField
+                        className="mb-4"
+                        type="text"
+                        name="value"
+                        value={formData.value}
+                        onChange={handleOnChange}
+                        placeholder="value (ETH)"
+                    />
+                    <GenericInputField
+                        type="text"
+                        name="address"
+                        value={formData.address}
+                        onChange={handleOnChange}
+                        placeholder="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                    />
+                    <p className="text-center text-sky-300 font-thin text-sm pt-2">
+                        NOTE: Address is only required for tranfer.
+                    </p>
+                </div>
+                <div className="flex justify-center mt-16">
+                    <GenericButton
+                        text="Deposit"
+                        onClick={() => console.log("deposit")}
+                        className="mx-2 px-12"
+                    />
+                    <GenericButton
+                        text="Withdraw"
+                        onClick={() => console.log("withdraw")}
+                        className="mx-2 px-12"
+                    />
+                    <GenericButton
+                        text="Tranfer"
+                        onClick={() => console.log("transfer")}
+                        className="mx-2 px-12"
+                    />
+                </div>
+            </form>
         </div>
     );
 }
