@@ -180,7 +180,7 @@ function App(): JSX.Element {
             <form id="data-form" onSubmit={handleOnSubmit}>
                 <div className="mt-24">
                     <GenericInputField
-                        className="mb-4"
+                        className="my-2"
                         type="text"
                         name="value"
                         value={formData.value}
@@ -192,6 +192,7 @@ function App(): JSX.Element {
                         }
                     />
                     <GenericInputField
+                        className="my-2"
                         type="text"
                         name="address"
                         value={formData.address}
