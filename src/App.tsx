@@ -12,6 +12,13 @@ interface contractAddressesInterface {
     [key: string]: string[];
 }
 
+enum Action {
+    None,
+    Deposit,
+    Withdraw,
+    Transfer,
+}
+
 function App(): JSX.Element {
     // * state
     const [formData, setFormData] = useState({
@@ -23,8 +30,9 @@ function App(): JSX.Element {
     const addresses: contractAddressesInterface = contractAddresses;
     const chainId: string = parseInt(ethereum.chainId).toString();
     const contractAddress = chainId in addresses ? addresses[chainId][0] : null;
+    let action = Action.None;
 
-    async function onDepositTap() {
+    async function deposit() {
         if (typeof ethereum !== "undefined") {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
@@ -35,10 +43,28 @@ function App(): JSX.Element {
                     value: ethers.utils.parseEther(formData.value),
                 });
                 await listenForTransactionMine(tx, provider);
+                setFormData({
+                    value: "",
+                    address: "",
+                });
             } catch (error) {
-                alert(
-                    `Facing issue while depositing please check you are on the correct chain.`
-                );
+                alert(error);
+            }
+        } else {
+            alert(`We could not find the MetaMask extension in your browser.`);
+        }
+    }
+
+    async function withdraw() {
+        if (typeof ethereum !== "undefined") {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            const contract = new ethers.Contract(contractAddress!, abi, signer);
+            try {
+                const tx: ContractTransaction = await contract.withdraw();
+                await listenForTransactionMine(tx, provider);
+            } catch (error) {
+                alert(error);
             }
         } else {
             alert(`We could not find the MetaMask extension in your browser.`);
@@ -80,6 +106,16 @@ function App(): JSX.Element {
 
     function handleOnSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
+        switch (action) {
+            case 1:
+                deposit();
+                break;
+            case 2:
+                withdraw();
+                break;
+            case 3:
+                break;
+        }
     }
 
     return (
@@ -119,12 +155,13 @@ function App(): JSX.Element {
                         className="mx-2 px-12"
                         form="data-form"
                         text="Deposit"
-                        onClick={onDepositTap}
+                        onClick={() => (action = Action.Deposit)}
                     />
                     <GenericButton
                         form="data-form"
                         text="Withdraw"
                         className="mx-2 px-12"
+                        onClick={() => (action = Action.Withdraw)}
                     />
                     <GenericButton
                         form="data-form"

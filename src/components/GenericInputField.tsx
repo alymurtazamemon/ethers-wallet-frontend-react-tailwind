@@ -27,6 +27,7 @@ function GenericInputField({
             value={value}
             name={name}
             onChange={onChange}
+            required={true}
         />
     );
 }
