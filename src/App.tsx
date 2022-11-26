@@ -196,7 +196,7 @@ function App(): JSX.Element {
                         name="address"
                         value={formData.address}
                         onChange={handleOnChange}
-                        placeholder="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                        placeholder="0xf39F......b92266"
                         required={
                             action.toString() === Action.Transfer.toString()
                         }
