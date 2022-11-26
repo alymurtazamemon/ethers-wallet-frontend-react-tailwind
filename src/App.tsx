@@ -2,7 +2,7 @@ import "./App.css";
 import ConnectButton from "./components/ConnectButton";
 import GenericButton from "./components/GenericButton";
 import { contractAddresses, abi } from "./constants";
-import { ethers, ContractTransaction } from "ethers";
+import { ethers, ContractTransaction, BigNumber } from "ethers";
 import GenericInputField from "./components/GenericInputField";
 import { ChangeEvent, FormEvent, useState } from "react";
 
@@ -33,7 +33,11 @@ function App(): JSX.Element {
     const contractAddress = chainId in addresses ? addresses[chainId][0] : null;
     // let action = Action.Withdraw;
 
-    async function deposit() {
+    interface DepositFunctionNamedParameters {
+        value: string;
+    }
+
+    async function deposit({ value }: DepositFunctionNamedParameters) {
         if (typeof ethereum !== "undefined") {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
@@ -41,7 +45,7 @@ function App(): JSX.Element {
             const contract = new ethers.Contract(contractAddress!, abi, signer);
             try {
                 const tx: ContractTransaction = await contract.deposit({
-                    value: ethers.utils.parseEther(formData.value),
+                    value: ethers.utils.parseEther(value),
                 });
                 await listenForTransactionMine(tx, provider);
                 setFormData({
@@ -64,6 +68,40 @@ function App(): JSX.Element {
             try {
                 const tx: ContractTransaction = await contract.withdraw();
                 await listenForTransactionMine(tx, provider);
+            } catch (error) {
+                alert(error);
+            }
+        } else {
+            alert(`We could not find the MetaMask extension in your browser.`);
+        }
+    }
+
+    interface TransferFunctionNamedParameters {
+        receivers: string[];
+        amounts: BigNumber[];
+        value: BigNumber;
+    }
+
+    async function transfer({
+        receivers,
+        amounts,
+        value,
+    }: TransferFunctionNamedParameters) {
+        if (typeof ethereum !== "undefined") {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            const contract = new ethers.Contract(contractAddress!, abi, signer);
+            try {
+                const tx: ContractTransaction = await contract.transfer(
+                    receivers,
+                    amounts,
+                    { value: value }
+                );
+                await listenForTransactionMine(tx, provider);
+                setFormData({
+                    value: "",
+                    address: "",
+                });
             } catch (error) {
                 alert(error);
             }
@@ -109,14 +147,23 @@ function App(): JSX.Element {
         event.preventDefault();
         switch (action) {
             case 1:
-                deposit();
+                deposit({ value: formData.value });
                 break;
             case 2:
                 withdraw();
                 break;
             case 3:
+                transfer({
+                    receivers: [formData.address],
+                    amounts: [ethers.utils.parseEther(formData.value)],
+                    value: ethers.utils.parseEther(sum([formData.value])),
+                });
                 break;
         }
+    }
+
+    function sum(amounts: string[]): string {
+        return amounts.reduce((a, b) => Number(a) + Number(b), 0).toString();
     }
 
     return (
