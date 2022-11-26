@@ -7,6 +7,7 @@ type Props = {
     value?: string | undefined;
     name?: string | undefined;
     onChange?: React.ChangeEventHandler<HTMLInputElement> | undefined;
+    required?: boolean | undefined;
 };
 
 function GenericInputField({
@@ -16,6 +17,7 @@ function GenericInputField({
     onChange,
     placeholder,
     className,
+    required,
 }: Props): JSX.Element {
     return (
         <input
@@ -27,7 +29,7 @@ function GenericInputField({
             value={value}
             name={name}
             onChange={onChange}
-            required={true}
+            required={required}
         />
     );
 }

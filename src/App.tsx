@@ -25,12 +25,13 @@ function App(): JSX.Element {
         value: "",
         address: "",
     });
+    const [action, setAction] = useState(Action.None);
 
     // * variables
     const addresses: contractAddressesInterface = contractAddresses;
     const chainId: string = parseInt(ethereum.chainId).toString();
     const contractAddress = chainId in addresses ? addresses[chainId][0] : null;
-    let action = Action.None;
+    // let action = Action.Withdraw;
 
     async function deposit() {
         if (typeof ethereum !== "undefined") {
@@ -138,6 +139,10 @@ function App(): JSX.Element {
                         value={formData.value}
                         onChange={handleOnChange}
                         placeholder="value (ETH)"
+                        required={
+                            action.toString() === Action.Deposit.toString() ||
+                            action.toString() === Action.Transfer.toString()
+                        }
                     />
                     <GenericInputField
                         type="text"
@@ -145,6 +150,9 @@ function App(): JSX.Element {
                         value={formData.address}
                         onChange={handleOnChange}
                         placeholder="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                        required={
+                            action.toString() === Action.Transfer.toString()
+                        }
                     />
                     <p className="text-center text-sky-300 font-thin text-sm pt-2">
                         NOTE: Address is only required for tranfer.
@@ -155,18 +163,25 @@ function App(): JSX.Element {
                         className="mx-2 px-12"
                         form="data-form"
                         text="Deposit"
-                        onClick={() => (action = Action.Deposit)}
+                        onClick={() => {
+                            setAction(Action.Deposit);
+                        }}
                     />
                     <GenericButton
                         form="data-form"
                         text="Withdraw"
                         className="mx-2 px-12"
-                        onClick={() => (action = Action.Withdraw)}
+                        onClick={() => {
+                            setAction(Action.Withdraw);
+                        }}
                     />
                     <GenericButton
                         form="data-form"
                         text="Tranfer"
                         className="mx-2 px-12"
+                        onClick={() => {
+                            setAction(Action.Transfer);
+                        }}
                     />
                 </div>
             </form>
