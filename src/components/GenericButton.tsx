@@ -5,9 +5,11 @@ type Props = {
     isDisabled?: boolean | undefined;
     text?: string | undefined;
     className?: string | undefined;
+    form?: string | undefined;
 };
 
 function GenericButton({
+    form,
     onClick,
     isDisabled,
     text,
@@ -15,6 +17,7 @@ function GenericButton({
 }: Props): JSX.Element {
     return (
         <button
+            form={form}
             className={twMerge(
                 `px-4 py-2 text-sky-400 border-2 border-sky-400 rounded-full hover:bg-sky-500 font-semibold hover:text-white hover:border-transparent ${className}`
             )}

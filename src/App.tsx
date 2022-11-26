@@ -4,7 +4,7 @@ import GenericButton from "./components/GenericButton";
 import { contractAddresses, abi } from "./constants";
 import { ethers, ContractTransaction } from "ethers";
 import GenericInputField from "./components/GenericInputField";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 
 const { ethereum } = window as any;
 
@@ -32,7 +32,7 @@ function App(): JSX.Element {
             const contract = new ethers.Contract(contractAddress!, abi, signer);
             try {
                 const tx: ContractTransaction = await contract.deposit({
-                    value: ethers.utils.parseEther("1"),
+                    value: ethers.utils.parseEther(formData.value),
                 });
                 await listenForTransactionMine(tx, provider);
             } catch (error) {
@@ -78,6 +78,10 @@ function App(): JSX.Element {
         });
     }
 
+    function handleOnSubmit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+    }
+
     return (
         <div className="">
             <div className="pt-4">
@@ -89,12 +93,7 @@ function App(): JSX.Element {
                 </p>
             </div>
             <ConnectButton />
-            <form
-            // onSubmit={(event) => {
-            //     event.preventDefault();
-            //     console.log("submit");
-            // }}
-            >
+            <form id="data-form" onSubmit={handleOnSubmit}>
                 <div className="mt-24">
                     <GenericInputField
                         className="mb-4"
@@ -117,18 +116,19 @@ function App(): JSX.Element {
                 </div>
                 <div className="flex justify-center mt-16">
                     <GenericButton
+                        className="mx-2 px-12"
+                        form="data-form"
                         text="Deposit"
-                        onClick={() => console.log("deposit")}
-                        className="mx-2 px-12"
+                        onClick={onDepositTap}
                     />
                     <GenericButton
+                        form="data-form"
                         text="Withdraw"
-                        onClick={() => console.log("withdraw")}
                         className="mx-2 px-12"
                     />
                     <GenericButton
+                        form="data-form"
                         text="Tranfer"
-                        onClick={() => console.log("transfer")}
                         className="mx-2 px-12"
                     />
                 </div>
