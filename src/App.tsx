@@ -5,6 +5,8 @@ import { contractAddresses, abi } from "./constants";
 import { ethers, ContractTransaction, BigNumber } from "ethers";
 import GenericInputField from "./components/GenericInputField";
 import { ChangeEvent, FormEvent, useState } from "react";
+import { useQuery } from "@apollo/client";
+import { GET_DEPOSITS_TRANSACTIONS } from "./constants/subgraphQueries";
 
 const { ethereum } = window as any;
 
@@ -20,6 +22,12 @@ enum Action {
 }
 
 function App(): JSX.Element {
+    const {
+        loading,
+        error,
+        data: depositsTxs,
+    } = useQuery(GET_DEPOSITS_TRANSACTIONS);
+
     // * state
     const [formData, setFormData] = useState({
         value: "",
