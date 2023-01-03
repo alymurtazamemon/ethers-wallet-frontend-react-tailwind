@@ -1,12 +1,13 @@
+import { ChangeEvent, FormEvent, useState } from "react";
+import { ethers, ContractTransaction, BigNumber } from "ethers";
+
 import "./App.css";
+
+import { contractAddresses, abi } from "./constants";
 import ConnectButton from "./components/ConnectButton";
 import GenericButton from "./components/GenericButton";
-import { contractAddresses, abi } from "./constants";
-import { ethers, ContractTransaction, BigNumber } from "ethers";
 import GenericInputField from "./components/GenericInputField";
-import { ChangeEvent, FormEvent, useState } from "react";
-import { useQuery } from "@apollo/client";
-import { GET_DEPOSITS_TRANSACTIONS } from "./constants/subgraphQueries";
+import Transactions from "./components/Transactions";
 
 const { ethereum } = window as any;
 
@@ -22,12 +23,6 @@ enum Action {
 }
 
 function App(): JSX.Element {
-    const {
-        loading,
-        error,
-        data: depositsTxs,
-    } = useQuery(GET_DEPOSITS_TRANSACTIONS);
-
     // * state
     const [formData, setFormData] = useState({
         value: "",
@@ -185,62 +180,80 @@ function App(): JSX.Element {
                 </p>
             </div>
             <ConnectButton />
-            <form id="data-form" onSubmit={handleOnSubmit}>
-                <div className="mt-24">
-                    <GenericInputField
-                        className="my-2"
-                        type="text"
-                        name="value"
-                        value={formData.value}
-                        onChange={handleOnChange}
-                        placeholder="value (ETH)"
-                        required={
-                            action.toString() === Action.Deposit.toString() ||
-                            action.toString() === Action.Transfer.toString()
-                        }
-                    />
-                    <GenericInputField
-                        className="my-2"
-                        type="text"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleOnChange}
-                        placeholder="0xf39F......b92266"
-                        required={
-                            action.toString() === Action.Transfer.toString()
-                        }
-                    />
-                    <p className="text-center text-sky-300 font-thin text-sm pt-2">
-                        NOTE: Address is only required for tranfer.
-                    </p>
+            <div className="flex">
+                <div>
+                    <h1 className="mt-16 text-white text-center">
+                        Transactions
+                    </h1>
+                    <div className="overflow-auto h-[32rem]">
+                        <Transactions />
+                        <Transactions />
+                        <Transactions />
+                        <Transactions />
+                        <Transactions />
+                        <Transactions />
+                        <Transactions />
+                        <Transactions />
+                    </div>
                 </div>
-                <div className="flex justify-center mt-16">
-                    <GenericButton
-                        className="mx-2 px-12"
-                        form="data-form"
-                        text="Deposit"
-                        onClick={() => {
-                            setAction(Action.Deposit);
-                        }}
-                    />
-                    <GenericButton
-                        form="data-form"
-                        text="Withdraw"
-                        className="mx-2 px-12"
-                        onClick={() => {
-                            setAction(Action.Withdraw);
-                        }}
-                    />
-                    <GenericButton
-                        form="data-form"
-                        text="Tranfer"
-                        className="mx-2 px-12"
-                        onClick={() => {
-                            setAction(Action.Transfer);
-                        }}
-                    />
-                </div>
-            </form>
+                <form id="data-form" onSubmit={handleOnSubmit}>
+                    <div className="mt-24">
+                        <GenericInputField
+                            className="my-2"
+                            type="text"
+                            name="value"
+                            value={formData.value}
+                            onChange={handleOnChange}
+                            placeholder="value (ETH)"
+                            required={
+                                action.toString() ===
+                                    Action.Deposit.toString() ||
+                                action.toString() === Action.Transfer.toString()
+                            }
+                        />
+                        <GenericInputField
+                            className="my-2"
+                            type="text"
+                            name="address"
+                            value={formData.address}
+                            onChange={handleOnChange}
+                            placeholder="0xf39F......b92266"
+                            required={
+                                action.toString() === Action.Transfer.toString()
+                            }
+                        />
+                        <p className="text-center text-sky-300 font-thin text-sm pt-2">
+                            NOTE: Address is only required for tranfer.
+                        </p>
+                    </div>
+                    <div className="flex justify-center mt-16">
+                        <GenericButton
+                            className="mx-2 px-12"
+                            form="data-form"
+                            text="Deposit"
+                            onClick={() => {
+                                setAction(Action.Deposit);
+                            }}
+                        />
+                        <GenericButton
+                            form="data-form"
+                            text="Withdraw"
+                            className="mx-2 px-12"
+                            onClick={() => {
+                                setAction(Action.Withdraw);
+                            }}
+                        />
+                        <GenericButton
+                            form="data-form"
+                            text="Tranfer"
+                            className="mx-2 px-12"
+                            onClick={() => {
+                                setAction(Action.Transfer);
+                            }}
+                        />
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }
