@@ -25,19 +25,12 @@ function App(): JSX.Element {
             </div>
             <div className="flex justify-between items-start mt-2">
                 <div className="w-2/6">
-                    <p className=" text-white text-center text-3xl font-bold">
+                    <p className=" text-sky-300 text-center text-3xl font-bold">
                         Transactions
                     </p>
                     {/* className="overflow-auto h-[32rem]" */}
-                    <div className="mt-4 px-8 overflow-auto scrollbar h-[32rem]">
+                    <div className="mt-4 px-8 overflow-auto scrollbar h-[32rem] divide-y-2 divide-sky-300">
                         <Transactions />
-                        <Transactions />
-                        <Transactions />
-                        <Transactions />
-                        <Transactions />
-                        <Transactions />
-                        {/* <Transactions /> */}
-                        {/* <Transactions /> */}
                     </div>
                 </div>
                 <div className="mt-24">
