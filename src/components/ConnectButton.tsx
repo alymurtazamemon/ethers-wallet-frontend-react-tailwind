@@ -63,13 +63,11 @@ function ConnectButton(): JSX.Element {
     }, []);
 
     return (
-        <div className="flex justify-end mr-24 -mt-20">
-            <GenericButton
-                onClick={onConnectTap}
-                isDisabled={isConnected}
-                text={isConnected ? accountAddress : "Connect Wallet"}
-            />
-        </div>
+        <GenericButton
+            onClick={onConnectTap}
+            isDisabled={isConnected}
+            text={isConnected ? accountAddress : "Connect Wallet"}
+        />
     );
 }
 

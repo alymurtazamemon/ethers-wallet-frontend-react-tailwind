@@ -9,16 +9,22 @@ function Transactions() {
 
     const depositsTxsTile = data.deposits.map((tx: any) => (
         <div className="text-white flex">
-            <div className="mr-4">
+            <div className="mr-10">
                 <p>From</p>
                 <p>To</p>
                 {/* mistake from contract side. */}
                 <p>Value</p>
                 <p>Timestamp</p>
             </div>
-            <div>
-                <p>{tx.sender}</p>
-                <p>{tx.receiver}</p>
+            <div className="w-full">
+                <p>
+                    {tx.sender.slice(0, 6)}...$
+                    {tx.sender.slice(tx.sender.length - 4)}
+                </p>
+                <p>
+                    {tx.receiver.slice(0, 6)}...$
+                    {tx.receiver.slice(tx.receiver.length - 4)}
+                </p>
                 {/* mistake from contract side. */}
                 <p>{tx.timestamp}</p>
                 <p>{tx.value}</p>
