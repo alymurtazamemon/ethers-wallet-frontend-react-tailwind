@@ -11,7 +11,6 @@ function Transactions({ loading, error, data }: Props) {
     if (loading) return <p className="text-white">Loading...</p>;
     if (error) return <p className="text-white">Error : {error.message}</p>;
 
-    console.log(data);
     const { deposits, withdraws, transfers } = data;
 
     let arrayOfTxs = [...deposits, ...withdraws, ...transfers];
