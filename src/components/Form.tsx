@@ -153,13 +153,13 @@ function Form({ refetch }: Props) {
             try {
                 provider.once(
                     transactionResponse.hash,
-                    (transactionReceipt: any) => {
+                    async (transactionReceipt: any) => {
                         console.log(
                             `Completed with ${transactionReceipt.confirmations} confirmations. `
                         );
                         resolve("success");
+                        await refetch();
                         setLoading(false);
-                        refetch();
                         dispatch({
                             type: "success",
                             title: "Success",

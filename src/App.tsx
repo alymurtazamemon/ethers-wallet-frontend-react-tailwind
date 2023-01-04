@@ -8,11 +8,14 @@ import Form from "./components/Form";
 import { useEffect } from "react";
 
 function App(): JSX.Element {
-    const { loading, error, data, refetch } = useQuery(GET_TRANSACTIONS);
+    const { loading, error, data, refetch, networkStatus } = useQuery(
+        GET_TRANSACTIONS,
+        {
+            notifyOnNetworkStatusChange: true,
+        }
+    );
 
-    useEffect(() => {
-        console.log(data);
-    }, [data]);
+    useEffect(() => {}, [data]);
 
     return (
         <div>
