@@ -1,5 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { ethers, ContractTransaction, BigNumber } from "ethers";
+import { Input, useNotification } from "@web3uikit/core";
+import { AiFillBell } from "react-icons/ai";
 
 import { contractAddresses, abi } from "../constants";
 import GenericButton from "./GenericButton";
@@ -19,6 +21,8 @@ interface contractAddressesInterface {
 }
 
 function Form() {
+    const dispatch = useNotification();
+
     // * state
     const [formData, setFormData] = useState({
         value: "",
@@ -51,8 +55,14 @@ function Form() {
                     value: "",
                     address: "",
                 });
-            } catch (error) {
-                alert(error);
+            } catch (error: any) {
+                dispatch({
+                    type: "error",
+                    title: error.name,
+                    message: error.message,
+                    icon: <AiFillBell />,
+                    position: "topR",
+                });
             }
         } else {
             alert(`We could not find the MetaMask extension in your browser.`);
@@ -67,8 +77,14 @@ function Form() {
             try {
                 const tx: ContractTransaction = await contract.withdraw();
                 await listenForTransactionMine(tx, provider);
-            } catch (error) {
-                alert(error);
+            } catch (error: any) {
+                dispatch({
+                    type: "error",
+                    title: error.name,
+                    message: error.message,
+                    icon: <AiFillBell />,
+                    position: "topR",
+                });
             }
         } else {
             alert(`We could not find the MetaMask extension in your browser.`);
@@ -122,10 +138,24 @@ function Form() {
                             `Completed with ${transactionReceipt.confirmations} confirmations. `
                         );
                         resolve("success");
+                        dispatch({
+                            type: "success",
+                            title: "Success",
+                            message: "Transaction Completed.",
+                            icon: <AiFillBell />,
+                            position: "topR",
+                        });
                     }
                 );
-            } catch (error) {
+            } catch (error: any) {
                 reject(error);
+                dispatch({
+                    type: "error",
+                    title: error.name,
+                    message: error.message,
+                    icon: <AiFillBell />,
+                    position: "topR",
+                });
             }
         });
     }

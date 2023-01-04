@@ -61,13 +61,32 @@ function Transactions() {
                     )}
 
                     <p>{ethers.utils.formatEther(value)} ETH</p>
-                    <p>{tx.timestamp}</p>
+                    <p>{timestampToDateAndTime(tx.timestamp)}</p>
                 </div>
             </div>
         );
     });
 
     return txs;
+}
+
+function timestampToDateAndTime(timestamp: number) {
+    const date = new Date(timestamp * 1000);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // January is 0
+    const day = date.getDate();
+    const hours = date.getHours();
+    const minutes = "0" + date.getMinutes();
+    const seconds = "0" + date.getSeconds();
+    const formattedDate =
+        year +
+        "-" +
+        (month < 10 ? `0${month}` : month) +
+        "-" +
+        (day < 10 ? `0${day}` : day);
+    const formattedTime =
+        hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+    return formattedDate + " " + formattedTime; // Output: "2022-09-22 12:34:56"
 }
 
 export default Transactions;
