@@ -1,10 +1,19 @@
 import "./App.css";
+import { useQuery } from "@apollo/client";
+import { GET_TRANSACTIONS } from "./constants/subgraphQueries";
 
 import ConnectButton from "./components/ConnectButton";
 import Transactions from "./components/Transactions";
 import Form from "./components/Form";
+import { useEffect } from "react";
 
 function App(): JSX.Element {
+    const { loading, error, data, refetch } = useQuery(GET_TRANSACTIONS);
+
+    useEffect(() => {
+        console.log(data);
+    }, [data]);
+
     return (
         <div>
             <div className="flex justify-between items-center mt-6">
@@ -30,11 +39,15 @@ function App(): JSX.Element {
                     </p>
                     {/* className="overflow-auto h-[32rem]" */}
                     <div className="mt-4 px-8 overflow-auto scrollbar h-[32rem] divide-y-2 divide-sky-300">
-                        <Transactions />
+                        <Transactions
+                            loading={loading}
+                            error={error}
+                            data={data}
+                        />
                     </div>
                 </div>
                 <div className="mt-24">
-                    <Form />
+                    <Form refetch={refetch} />
                 </div>
                 <div className="w-2/6"></div>
             </div>

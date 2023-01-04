@@ -1,11 +1,12 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { ethers, ContractTransaction, BigNumber } from "ethers";
-import { Input, Loading, useNotification } from "@web3uikit/core";
+import { Loading, useNotification } from "@web3uikit/core";
 import { AiFillBell } from "react-icons/ai";
 
 import { contractAddresses, abi } from "../constants";
 import GenericButton from "./GenericButton";
 import GenericInputField from "./GenericInputField";
+import { ApolloQueryResult, OperationVariables } from "@apollo/client";
 
 enum Action {
     None,
@@ -20,7 +21,13 @@ interface contractAddressesInterface {
     [key: string]: string[];
 }
 
-function Form() {
+interface Props {
+    refetch: (
+        variables?: Partial<OperationVariables> | undefined
+    ) => Promise<ApolloQueryResult<any>>;
+}
+
+function Form({ refetch }: Props) {
     const dispatch = useNotification();
 
     // * state
@@ -135,6 +142,7 @@ function Form() {
             alert(`We could not find the MetaMask extension in your browser.`);
         }
     }
+
     function listenForTransactionMine(
         transactionResponse: ContractTransaction,
         provider: any
@@ -151,6 +159,7 @@ function Form() {
                         );
                         resolve("success");
                         setLoading(false);
+                        refetch();
                         dispatch({
                             type: "success",
                             title: "Success",

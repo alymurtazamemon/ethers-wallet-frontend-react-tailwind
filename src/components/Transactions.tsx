@@ -1,10 +1,13 @@
+import { ApolloError } from "@apollo/client";
 import { ethers } from "ethers";
-import { useQuery } from "@apollo/client";
-import { GET_TRANSACTIONS } from "../constants/subgraphQueries";
 
-function Transactions() {
-    const { loading, error, data } = useQuery(GET_TRANSACTIONS);
+interface Props {
+    loading: boolean;
+    error: ApolloError | undefined;
+    data: any;
+}
 
+function Transactions({ loading, error, data }: Props) {
     if (loading) return <p className="text-white">Loading...</p>;
     if (error) return <p className="text-white">Error : {error.message}</p>;
 
